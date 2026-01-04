@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Drizzle AI</title>
+    <link rel="stylesheet" href="css/tyylit.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+      #chatWidget {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 280px;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+        z-index: 9999;
+        font-size: 14px;
+        overflow: hidden;
+      }
+      #chatHeader {
+        background: #333;
+        color: white;
+        padding: 10px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      #chatBody {
+        height: 260px;
+        overflow-y: auto;
+        padding: 10px;
+      }
+      #chatInputArea {
+        display: flex;
+        border-top: 1px solid #ccc;
+      }
+      #chatInput {
+        flex: 1;
+        padding: 8px;
+        border: none;
+        outline: none;
+      }
+      #sendBtn {
+        background: #333;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        cursor: pointer;
+      }
+      .msg { margin: 6px 0; }
+      .userMsg { font-weight: bold; }
+      .aiMsg { color: white; }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+  <h1>Drizzle AI</h1>
+  <p class="note">The Voice for Plants</p>
+</div>
+
+<div class="navbar">
+  <a href="index.html"> Home</a>
+  <a href="#"> Services</a>
+  <a href="#"> About Us</a>
+  <a href="#"> Contact Us</a>
+</div>
+
+<div class="row">
+  <div class="main">
+    <h2>Who are we?</h2>
+    <p>
+      Drizzle AI is a technology company specialising in AI founded in 2025,
+      that offers
+      intelligent and innovative solutions powered by AI to plant care and agriculture.
+    </p>
+
+    <h2>Our services</h2>
+    <ul>
+      <li>DrizzleAI for plant care</li>
+      <li>Plant based and agricultural Data analytics</li>
+      <li>AI supported solutions for customer service</li>
+      <li>Cloud infrastructure and DevOps consulting</li>
+    </ul>
+
+    <h2>Our Mission</h2>
+    <p>
+      We build AI technology that is:
+      <br>✔ Easy to use 
+      <br>✔ Safe  
+      <br>✔ Affordable  
+      <br>✔ Innovative
+    </p>
+  </div>
+
+  <div class="side">
+    <h2>News</h2>
+      <ul>
+        <li>Drizzle AI published their new customer service chatbot: DrizzleChat 2025</li>
+        <li>Drizzle Ai was launched 2025</li>
+      </ul>
+  </div>
+</div>
+
+<div class="footer">
+  <p>Page last modified on 4.1.2026</p>
+</div>
+
+<!-- DrizzleChat -->
+<div id="chatWidget">
+  <div id="chatHeader" onclick="toggleChat()">DrizzleChat</div>
+  <div id="chatBody"></div>
+  <div id="chatInputArea">
+    <input id="chatInput" placeholder="Ask about Drizzle AI..." />
+    <button id="sendBtn" onclick="sendChat()">Send</button>
+  </div>
+</div>
+
+<script>
+let chatOpen = true;
+function toggleChat() {
+  const body = document.getElementById("chatBody");
+  const inputArea = document.getElementById("chatInputArea");
+  chatOpen = !chatOpen;
+  body.style.display = chatOpen ? "block" : "none";
+  inputArea.style.display = chatOpen ? "flex" : "none";
+}
+
+async function sendChat() {
+  const input = document.getElementById("chatInput");
+  const chat = document.getElementById("chatBody");
+  const userText = input.value.trim();
+  if (!userText) return;
+
+  chat.innerHTML += `<div class="msg userMsg">You: ${userText}</div>`;
+  input.value = "";
+  chat.innerHTML += `<div class="msg aiMsg">Responding...</div>`;
+  chat.scrollTop = chat.scrollHeight;
+
+  try {
+    const res = await fetch("/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: userText }),
+    });
+    const data = await res.json();
+    chat.innerHTML = chat.innerHTML.replace(/Responding.../g, "");
+    chat.innerHTML += `<div class="msg aiMsg">DrizzleChat: ${data.reply}</div>`;
+    chat.scrollTop = chat.scrollHeight;
+  } catch {
+    chat.innerHTML = chat.innerHTML.replace(/Responding.../g, "");
+    chat.innerHTML += `<div class="msg aiMsg">DrizzleChat: Didn't respond.</div>`;
+  }
+}
+</script>
+
+</body>
+</html>
